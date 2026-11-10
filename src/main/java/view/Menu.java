@@ -3,9 +3,8 @@ package view;
 
 import java.util.Scanner;
 
-/**
- * Función: mostrar el menú principal del sistema CrediYa
- * y permitir al usuario seleccionar una opción.
+/*
+ Función: mostrar el menú principal del sistema CrediYa y permitir al usuario seleccionar una opción.
  */
 public class Menu{
 

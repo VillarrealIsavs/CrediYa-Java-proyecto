@@ -1,16 +1,17 @@
 
 package com.isabella.crediya;
-import view.Menu;
-/*
-Funcion iniciar la aplicacion crediYa y mostrar el menu principal
 
-*/
-public class CrediYa{
-    public static void main(String[]args){
-        //crear el objeto del menu
-        Menu miMenu = new Menu();
-        
-        //mostrar el menu principal
-        miMenu.mostrarMenu();
+import controller.GestionarFlujo;
+
+/**
+ * Función: iniciar el sistema CrediYa.
+ */
+public class CrediYa {
+
+    public static void main(String[] args) {
+
+        GestionarFlujo flujo = new GestionarFlujo();
+        flujo.iniciar();
+
     }
 }
