@@ -20,35 +20,37 @@ import model.Empleado;
 public class prestamoDAO implements IPrestamoDao {
 
     // Registrar un préstamo en la base de datos
-    @Override
-    public boolean guardar(Prestamo prestamo) {
+    // Registrar un préstamo en la base de datos
+@Override
+public boolean guardar(Prestamo prestamo) {
 
-        String sql = "INSERT INTO prestamos "
-                + "(cliente_id, empleado_id, monto, interes, cuotas, "
-                + "fecha_inicio, estado) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+    double total = prestamo.getmonto()
+            + (prestamo.getmonto() * prestamo.getinteres() / 100
+            * prestamo.getcuotas());
 
-        try (Connection con = Conexion.conectar();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+    String sql = "INSERT INTO prestamos "
+            + "(cliente_id, empleado_id, monto, interes, cuotas, fecha_inicio, estado, total) "
+            + "VALUES ("
+            + prestamo.getcliente().getid() + ", "
+            + prestamo.getempleado().getid() + ", "
+            + prestamo.getmonto() + ", "
+            + prestamo.getinteres() + ", "
+            + prestamo.getcuotas() + ", '"
+            + prestamo.getfechaInicio() + "', '"
+            + prestamo.getestado() + "', "
+            + total + ")";
 
-            ps.setInt(1, prestamo.getcliente().getid());
-            ps.setInt(2, prestamo.getempleado().getid());
-            ps.setDouble(3, prestamo.getmonto());
-            ps.setDouble(4, prestamo.getinteres());
-            ps.setInt(5, prestamo.getcuotas());
-            ps.setDate(6, Date.valueOf(prestamo.getfechaInicio()));
-            ps.setString(7, prestamo.getestado());
+    try (Connection con = Conexion.conectar();
+         java.sql.Statement st = con.createStatement()) {
 
-            ps.executeUpdate();
+        st.executeUpdate(sql);
+        return true;
 
-            return true;
-
-        } catch (SQLException e) {
-            System.out.println("Error al guardar préstamo: "
-                    + e.getMessage());
-            return false;
-        }
+    } catch (SQLException e) {
+        System.out.println("Error al guardar préstamo: " + e.getMessage());
+        return false;
     }
+}
 
     // Consultar los préstamos con sus respectivos clientes y empleados
     @Override
@@ -67,13 +69,10 @@ public class prestamoDAO implements IPrestamoDao {
                 + "FROM prestamos p "
                 + "INNER JOIN clientes c ON p.cliente_id = c.id "
                 + "INNER JOIN empleados e ON p.empleado_id = e.id";
-
         List<Prestamo> lista = new ArrayList<>();
-
         try (Connection con = Conexion.conectar();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-
             while (rs.next()) {
 
                 Cliente cliente = new Cliente(
@@ -83,7 +82,6 @@ public class prestamoDAO implements IPrestamoDao {
                         rs.getString("cliente_correo"),
                         rs.getString("cliente_telefono")
                 );
-
                 Empleado empleado = new Empleado(
                         rs.getInt("empleado_id"),
                         rs.getString("empleado_nombre"),
@@ -92,7 +90,6 @@ public class prestamoDAO implements IPrestamoDao {
                         rs.getString("empleado_rol"),
                         rs.getDouble("empleado_salario")
                 );
-
                 Prestamo prestamo = new Prestamo(
                         rs.getInt("prestamo_id"),
                         cliente,
@@ -103,15 +100,12 @@ public class prestamoDAO implements IPrestamoDao {
                         rs.getString("estado"),
                         rs.getDate("fecha_inicio").toLocalDate()
                 );
-
                 lista.add(prestamo);
             }
-
         } catch (SQLException e) {
             System.out.println("Error al consultar préstamos: "
                     + e.getMessage());
         }
-
         return lista;
     }
 }
