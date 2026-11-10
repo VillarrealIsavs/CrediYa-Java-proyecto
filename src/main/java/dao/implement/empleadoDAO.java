@@ -1,4 +1,5 @@
 
+
 package dao.implement;
 
 import dao.interfaces.IEmpleadoDao;
@@ -6,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import model.Empleado;
@@ -15,7 +17,7 @@ import model.Empleado;
  */
 public class empleadoDAO implements IEmpleadoDao {
 
-    // Registrar un empleado en la base de datos
+    // Registrar un empleado y recuperar su ID
     @Override
     public boolean guardar(Empleado empleado) {
 
@@ -24,7 +26,8 @@ public class empleadoDAO implements IEmpleadoDao {
                 + "VALUES (?, ?, ?, ?, ?)";
 
         try (Connection con = Conexion.conectar();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+             PreparedStatement ps = con.prepareStatement(
+                     sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, empleado.getnombre());
             ps.setString(2, empleado.getdocumento());
@@ -34,8 +37,12 @@ public class empleadoDAO implements IEmpleadoDao {
 
             ps.executeUpdate();
 
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    empleado.setid(rs.getInt(1));
+                }
+            }
             return true;
-
         } catch (SQLException e) {
             System.out.println("Error al guardar empleado: "
                     + e.getMessage());
@@ -45,18 +52,13 @@ public class empleadoDAO implements IEmpleadoDao {
 
     // Consultar todos los empleados registrados
     @Override
-    public List<Empleado> listar() {
-
+    public List<Empleado> listar(){
         String sql = "SELECT * FROM empleados";
-
         List<Empleado> lista = new ArrayList<>();
-
         try (Connection con = Conexion.conectar();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-
             while (rs.next()) {
-
                 Empleado e = new Empleado(
                         rs.getInt("id"),
                         rs.getString("nombre"),
@@ -65,10 +67,8 @@ public class empleadoDAO implements IEmpleadoDao {
                         rs.getString("rol"),
                         rs.getDouble("salario")
                 );
-
                 lista.add(e);
             }
-
         } catch (SQLException e) {
             System.out.println("Error al consultar empleados: "
                     + e.getMessage());
@@ -77,3 +77,4 @@ public class empleadoDAO implements IEmpleadoDao {
         return lista;
     }
 }
+

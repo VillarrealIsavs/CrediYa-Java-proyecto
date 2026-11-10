@@ -5,6 +5,7 @@ import dao.interfaces.IPrestamoDao;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import model.Prestamo;
@@ -16,7 +17,7 @@ import model.Empleado;
  */
 public class prestamoDAO implements IPrestamoDao {
 
-    // Registrar un préstamo
+    // Registrar un préstamo y recuperar su ID
     @Override
     public boolean guardar(Prestamo prestamo) {
 
@@ -35,9 +36,16 @@ public class prestamoDAO implements IPrestamoDao {
                 + prestamo.gettotal() + ")";
 
         try (Connection con = Conexion.conectar();
-             java.sql.Statement st = con.createStatement()) {
+             Statement st = con.createStatement()) {
 
-            st.executeUpdate(sql);
+            st.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+
+            try (ResultSet rs = st.getGeneratedKeys()) {
+                if (rs.next()) {
+                    prestamo.setid(rs.getInt(1));
+                }
+            }
+
             return true;
 
         } catch (SQLException e) {
@@ -66,7 +74,7 @@ public class prestamoDAO implements IPrestamoDao {
         List<Prestamo> lista = new ArrayList<>();
 
         try (Connection con = Conexion.conectar();
-             java.sql.Statement st = con.createStatement();
+             Statement st = con.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
 
             while (rs.next()) {
@@ -121,7 +129,7 @@ public class prestamoDAO implements IPrestamoDao {
                 + estado + "' WHERE id = " + id;
 
         try (Connection con = Conexion.conectar();
-             java.sql.Statement st = con.createStatement()) {
+             Statement st = con.createStatement()) {
 
             st.executeUpdate(sql);
             return true;
@@ -132,4 +140,3 @@ public class prestamoDAO implements IPrestamoDao {
         }
     }
 }
-

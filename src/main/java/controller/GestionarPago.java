@@ -1,11 +1,12 @@
 
-
 package controller;
 
 import dao.implement.pagoDAO;
 import dao.implement.prestamoDAO;
 import datos.Archivos;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import model.Pago;
 import model.Prestamo;
 
@@ -55,7 +56,34 @@ public class GestionarPago {
 
     // Consultar los pagos de un préstamo
     public List<Pago> listarPagos(Prestamo prestamo) {
-        return pagoDao.listar(prestamo);
+
+        List<Pago> pagos = pagoDao.listar(prestamo);
+        List<String> registros = archivo.leer("pagos.txt");
+
+        Set<Integer> ids = new HashSet<>();
+
+        for (String registro : registros) {
+
+            String[] datos = registro.split(",");
+
+            if (datos.length == 4) {
+                try {
+                    int id = Integer.parseInt(datos[0]);
+                    int prestamoId = Integer.parseInt(datos[1]);
+
+                    if (prestamoId == prestamo.getid()) {
+                        ids.add(id);
+                    }
+
+                } catch (NumberFormatException e) {
+                    System.out.println("Registro de pago inválido.");
+                }
+            }
+        }
+
+        pagos.removeIf(pago -> !ids.isEmpty() && !ids.contains(pago.getid()));
+
+        return pagos;
     }
 
     // Calcular el saldo pendiente

@@ -1,4 +1,5 @@
 
+
 package dao.implement;
 
 import dao.interfaces.IPagoDao;
@@ -7,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Date;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import model.Pago;
@@ -17,7 +19,7 @@ import model.Prestamo;
  */
 public class pagoDAO implements IPagoDao {
 
-    // Registrar un pago en la base de datos
+    // Registrar un pago y recuperar su ID
     @Override
     public boolean guardar(Pago pago) {
 
@@ -26,13 +28,20 @@ public class pagoDAO implements IPagoDao {
                 + "VALUES (?, ?, ?)";
 
         try (Connection con = Conexion.conectar();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+             PreparedStatement ps = con.prepareStatement(
+                     sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setInt(1, pago.getprestamo().getid());
             ps.setDouble(2, pago.getmonto());
             ps.setDate(3, Date.valueOf(pago.getfecha()));
 
             ps.executeUpdate();
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    pago.setid(rs.getInt(1));
+                }
+            }
 
             return true;
 
@@ -42,6 +51,7 @@ public class pagoDAO implements IPagoDao {
             return false;
         }
     }
+
     // Consultar los pagos de un préstamo específico
     @Override
     public List<Pago> listar(Prestamo prestamo) {
@@ -54,21 +64,26 @@ public class pagoDAO implements IPagoDao {
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, prestamo.getid());
+
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
+
                     Pago pago = new Pago(
                             rs.getInt("id"),
                             prestamo,
                             rs.getDouble("monto"),
                             rs.getDate("fecha").toLocalDate()
                     );
+
                     lista.add(pago);
                 }
             }
+
         } catch (SQLException e) {
             System.out.println("Error al consultar pagos: "
                     + e.getMessage());
         }
+
         return lista;
     }
 }

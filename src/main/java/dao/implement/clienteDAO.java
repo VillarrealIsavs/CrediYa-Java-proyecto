@@ -1,4 +1,5 @@
 
+
 package dao.implement;
 
 import dao.interfaces.IClienteDao;
@@ -6,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import model.Cliente;
@@ -15,7 +17,7 @@ import model.Cliente;
  */
 public class clienteDAO implements IClienteDao {
 
-    // Registrar un cliente en la base de datos
+    // Registrar un cliente y recuperar su ID
     @Override
     public boolean guardar(Cliente cliente) {
 
@@ -24,7 +26,8 @@ public class clienteDAO implements IClienteDao {
                 + "VALUES (?, ?, ?, ?)";
 
         try (Connection con = Conexion.conectar();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+             PreparedStatement ps = con.prepareStatement(
+                     sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, cliente.getnombre());
             ps.setString(2, cliente.getdocumento());
@@ -32,6 +35,12 @@ public class clienteDAO implements IClienteDao {
             ps.setString(4, cliente.gettelefono());
 
             ps.executeUpdate();
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    cliente.setid(rs.getInt(1));
+                }
+            }
 
             return true;
 
