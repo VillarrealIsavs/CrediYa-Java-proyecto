@@ -4,6 +4,7 @@ model\Prestamo.class
 strategy\interescompuesto.class
 model\Empleado.class
 view\MenuPersona.class
+view\MenuReporte.class
 controller\GestionarPrestamo.class
 model\Cliente.class
 view\MenuPrestamo.class
@@ -12,7 +13,6 @@ view\MenuPago.class
 datos\Archivos.class
 controller\GestionarFlujo.class
 dao\interfaces\IClienteDao.class
-controller\gestion.class
 view\Menu.class
 controller\calculos.class
 controller\GestionarEmpleado.class

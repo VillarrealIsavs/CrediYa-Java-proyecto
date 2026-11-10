@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import model.Prestamo;
 
 /*
- Función: consultar los préstamos según su estado.
+    Función: consultar los préstamos según su estado.
  */
 public class reportes{
     public List<Prestamo> prestamosActivos(List<Prestamo> prestamos) {
@@ -18,6 +18,12 @@ public class reportes{
     public List<Prestamo> prestamosCancelados(List<Prestamo> prestamos) {
         return prestamos.stream()
                 .filter(p -> p.getestado().equals("cancelado"))
+                .collect(Collectors.toList());
+    }
+
+    public List<Prestamo> prestamosEntregados(List<Prestamo> prestamos) {
+        return prestamos.stream()
+                .filter(p -> p.getestado().equals("entregado"))
                 .collect(Collectors.toList());
     }
 }
