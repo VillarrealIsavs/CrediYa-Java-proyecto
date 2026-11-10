@@ -128,7 +128,9 @@ public class MenuPrestamo {
         double valorCuota = calculadora.calcularCuota(monto, interes, cuotas, metodo);
 
         Prestamo prestamo = new Prestamo(0, cliente, empleado, monto,
-                interes, cuotas, "pendiente", LocalDate.now());
+        interes, cuotas, "pendiente", LocalDate.now());
+        
+        prestamo.settotal(total);
 
         System.out.println("Total a pagar: " + total);
         System.out.println("Valor de cada cuota: " + valorCuota);

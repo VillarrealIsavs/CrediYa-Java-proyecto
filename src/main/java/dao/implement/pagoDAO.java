@@ -42,7 +42,6 @@ public class pagoDAO implements IPagoDao {
             return false;
         }
     }
-
     // Consultar los pagos de un préstamo específico
     @Override
     public List<Pago> listar(Prestamo prestamo) {
@@ -55,27 +54,21 @@ public class pagoDAO implements IPagoDao {
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, prestamo.getid());
-
             try (ResultSet rs = ps.executeQuery()) {
-
                 while (rs.next()) {
-
                     Pago pago = new Pago(
                             rs.getInt("id"),
                             prestamo,
                             rs.getDouble("monto"),
                             rs.getDate("fecha").toLocalDate()
                     );
-
                     lista.add(pago);
                 }
             }
-
         } catch (SQLException e) {
             System.out.println("Error al consultar pagos: "
                     + e.getMessage());
         }
-
         return lista;
     }
 }

@@ -14,7 +14,7 @@ public class Conexion{
 
     private static final String USER = "root";
 
-    private static final String PASSWORD = "TU_CONTRASEÑA";
+    private static final String PASSWORD = "Isavs2126";
 
     // Establecer conexión con MySQL.
     public static Connection conectar() throws SQLException {
