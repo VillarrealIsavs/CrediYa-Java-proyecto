@@ -1,17 +1,21 @@
 
 package strategy;
 
-/*
-    Función: calcular los intereses de un préstamo utilizando el método de interés compuesto.
+/**
+ * Función: calcular el interés compuesto de un préstamo.
  */
 public class interescompuesto implements estrategia {
 
-    // Calcular el interés compuesto del préstamo
     @Override
     public double calcularInteres(double monto, double interes, int cuotas) {
 
         double tasa = interes / 100;
+        double total = 1;
 
-        return monto * (Math.pow(1 + tasa, cuotas) - 1);
+        for (int i = 0; i < cuotas; i++) {
+            total = total * (1 + tasa);
+        }
+
+        return monto * (total - 1);
     }
 }

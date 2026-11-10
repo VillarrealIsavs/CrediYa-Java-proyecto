@@ -5,25 +5,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 import model.Prestamo;
 
-/**
- * Función: generar reportes de los préstamos
- * registrados en el sistema CrediYa.
+/*
+ Función: consultar los préstamos según su estado.
  */
-public class reportes {
-
-    // Consultar los préstamos activos
+public class reportes{
     public List<Prestamo> prestamosActivos(List<Prestamo> prestamos) {
-
         return prestamos.stream()
-                .filter(p -> p.getestado().equalsIgnoreCase("pendiente"))
+                .filter(p -> p.getestado().equals("pendiente"))
                 .collect(Collectors.toList());
     }
 
-    // Consultar los préstamos cancelados
     public List<Prestamo> prestamosCancelados(List<Prestamo> prestamos) {
-
         return prestamos.stream()
-                .filter(p -> p.getestado().equalsIgnoreCase("cancelado"))
+                .filter(p -> p.getestado().equals("cancelado"))
                 .collect(Collectors.toList());
     }
 }
