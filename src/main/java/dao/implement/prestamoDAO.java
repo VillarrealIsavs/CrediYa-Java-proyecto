@@ -1,5 +1,4 @@
 
-
 package dao.implement;
 
 import dao.interfaces.IPrestamoDao;
@@ -13,8 +12,7 @@ import model.Cliente;
 import model.Empleado;
 
 /*
- * Función: guardar, consultar y actualizar préstamos
- * en la base de datos CrediYa.
+ * Función: guardar, consultar y actualizar préstamos.
  */
 public class prestamoDAO implements IPrestamoDao {
 
@@ -23,7 +21,8 @@ public class prestamoDAO implements IPrestamoDao {
     public boolean guardar(Prestamo prestamo) {
 
         String sql = "INSERT INTO prestamos "
-                + "(cliente_id, empleado_id, monto, interes, cuotas, fecha_inicio, estado, total) "
+                + "(cliente_id, empleado_id, monto, interes, cuotas, fecha_inicio, "
+                + "fecha_vencimiento, estado, total) "
                 + "VALUES ("
                 + prestamo.getcliente().getid() + ", "
                 + prestamo.getempleado().getid() + ", "
@@ -31,6 +30,7 @@ public class prestamoDAO implements IPrestamoDao {
                 + prestamo.getinteres() + ", "
                 + prestamo.getcuotas() + ", '"
                 + prestamo.getfechaInicio() + "', '"
+                + prestamo.getfechaVencimiento() + "', '"
                 + prestamo.getestado() + "', "
                 + prestamo.gettotal() + ")";
 
@@ -51,7 +51,8 @@ public class prestamoDAO implements IPrestamoDao {
     public List<Prestamo> listar() {
 
         String sql = "SELECT p.id AS prestamo_id, p.monto, p.interes, "
-                + "p.cuotas, p.fecha_inicio, p.estado, p.total, "
+                + "p.cuotas, p.fecha_inicio, p.fecha_vencimiento, "
+                + "p.estado, p.total, "
                 + "c.id AS cliente_id, c.nombre AS cliente_nombre, "
                 + "c.documento AS cliente_documento, c.correo AS cliente_correo, "
                 + "c.telefono AS cliente_telefono, "
@@ -99,6 +100,10 @@ public class prestamoDAO implements IPrestamoDao {
                 );
 
                 prestamo.settotal(rs.getDouble("total"));
+                prestamo.setfechaVencimiento(
+                        rs.getDate("fecha_vencimiento").toLocalDate()
+                );
+
                 lista.add(prestamo);
             }
 
@@ -127,3 +132,4 @@ public class prestamoDAO implements IPrestamoDao {
         }
     }
 }
+
