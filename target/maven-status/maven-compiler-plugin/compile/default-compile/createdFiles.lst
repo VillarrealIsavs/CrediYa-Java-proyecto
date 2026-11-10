@@ -3,9 +3,12 @@ model\Persona.class
 model\Prestamo.class
 strategy\interescompuesto.class
 model\Empleado.class
+view\MenuPersona.class
 controller\GestionarPrestamo.class
 model\Cliente.class
+view\MenuPrestamo.class
 dao\interfaces\IPagoDao.class
+view\MenuPago.class
 datos\Archivos.class
 controller\GestionarFlujo.class
 dao\interfaces\IClienteDao.class

@@ -2,47 +2,39 @@
 package view;
 
 import java.util.Scanner;
-
+import view.MenuPago;
 /*
- Función: mostrar el menú principal del sistema CrediYa y permitir al usuario seleccionar una opción.
+    Función: mostrar el menú principal del sistema CrediYa.
  */
 public class Menu{
-
     private final Scanner entrada = new Scanner(System.in);
+    private final MenuPersona menuPersona = new MenuPersona(entrada);
+    private final MenuPrestamo menuPrestamo = new MenuPrestamo(entrada);
+    private final MenuPago menuPago = new MenuPago(entrada);
 
-    // Mostrar las opciones principales del sistema
+    // Mostrar las opciones principales
     public void mostrarMenu() {
-
         int opcion;
-
         do {
             System.out.println("\n===== CREDIYA =====");
-            System.out.println("1. Gestionar empleados");
-            System.out.println("2. Gestionar clientes");
-            System.out.println("3. Gestionar prestamos");
-            System.out.println("4. Gestionar pagos");
-            System.out.println("5. Consultar reportes");
-            System.out.println("6. Salir");
+            System.out.println("1. Gestionar empleados y clientes");
+            System.out.println("2. Gestionar prestamos");
+            System.out.println("3. Gestionar pagos");
+            System.out.println("4. Consultar reportes");
+            System.out.println("5. Salir");
             System.out.print("Seleccione una opcion: ");
 
-            while (!entrada.hasNextInt()) {
-                System.out.println("Ingrese un número válido.");
-                entrada.next();
-                System.out.print("Seleccione una opcion: ");
-            }
-
-            opcion = entrada.nextInt();
+            opcion = Integer.parseInt(entrada.nextLine());
 
             switch (opcion) {
-                case 1 -> System.out.println("Empleados.");
-                case 2 -> System.out.println("Clientes.");
-                case 3 -> System.out.println("Prestamos.");
-                case 4 -> System.out.println("Pagos.");
-                case 5 -> System.out.println("Reportes.");
-                case 6 -> System.out.println("Gracias por usar CrediYa.");
-                default -> System.out.println("Opcion no válida.");
+                case 1 -> menuPersona.mostrarMenu();
+                case 2 -> menuPrestamo.mostrarMenu();
+                case 3 -> menuPago.mostrarMenu();
+                case 4 -> System.out.println("Reportes.");
+                case 5 -> System.out.println("Gracias por usar CrediYa.");
+                default -> System.out.println("Opcion no valida.");
             }
 
-        } while (opcion != 6);
+        } while (opcion != 5);
     }
 }

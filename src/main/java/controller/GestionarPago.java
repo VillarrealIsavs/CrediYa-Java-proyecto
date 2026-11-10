@@ -7,34 +7,32 @@ import java.util.List;
 import model.Pago;
 import model.Prestamo;
 
-/**
- * Función: gestionar el registro y consulta
- * de los pagos realizados en CrediYa.
+/*
+ * Función: gestionar el registro y consulta de pagos.
  */
-public class GestionarPago {
-
-    // Crear los objetos necesarios
+public class GestionarPago{
     private final pagoDAO pagoDao = new pagoDAO();
     private final Archivos archivo = new Archivos();
 
-    // Registrar un pago en MySQL
+    // Registrar pago en MySQL y TXT
     public boolean registrarPago(Pago pago) {
-        return pagoDao.guardar(pago);
+
+        boolean guardado = pagoDao.guardar(pago);
+
+        if (guardado) {
+            String datos = pago.getid() + ","
+                    + pago.getprestamo().getid() + ","
+                    + pago.getmonto() + ","
+                    + pago.getfecha();
+
+            archivo.guardar("pagos.txt", datos);
+        }
+
+        return guardado;
     }
 
-    // Consultar los pagos de un préstamo
+    // Consultar pagos de un préstamo
     public List<Pago> listarPagos(Prestamo prestamo) {
         return pagoDao.listar(prestamo);
-    }
-
-    // Guardar un pago en un archivo TXT
-    public void guardarPagoTXT(Pago pago) {
-
-        String datos = pago.getid() + ","
-                + pago.getprestamo().getid() + ","
-                + pago.getmonto() + ","
-                + pago.getfecha();
-
-        archivo.guardar("pagos.txt", datos);
     }
 }
