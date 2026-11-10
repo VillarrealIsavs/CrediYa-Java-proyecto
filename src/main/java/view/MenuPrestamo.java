@@ -1,3 +1,4 @@
+
 package view;
 
 import controller.GestionarPrestamo;
@@ -29,6 +30,88 @@ public class MenuPrestamo {
         this.entrada = entrada;
     }
 
+    // Leer una opción válida del menú
+    private int leerOpcion(String mensaje, int minimo, int maximo) {
+        while (true) {
+            try {
+                System.out.print(mensaje);
+                int opcion = Integer.parseInt(entrada.nextLine());
+
+                if (opcion >= minimo && opcion <= maximo) {
+                    return opcion;
+                }
+
+                System.out.println("Seleccione una opción entre "
+                        + minimo + " y " + maximo + ".");
+
+            } catch (NumberFormatException e) {
+                System.out.println("Ingrese una opción numérica válida.");
+            }
+        }
+    }
+
+    // Leer un número entero positivo
+    private int leerEntero(String mensaje) {
+        while (true) {
+            try {
+                System.out.print(mensaje);
+                int numero = Integer.parseInt(entrada.nextLine());
+
+                if (numero > 0) {
+                    return numero;
+                }
+
+                System.out.println("Ingrese un número mayor que cero.");
+
+            } catch (NumberFormatException e) {
+                System.out.println("Ingrese un número entero válido.");
+            }
+        }
+    }
+
+    // Leer un monto positivo
+    private double leerNumero(String mensaje) {
+        while (true) {
+            try {
+                System.out.print(mensaje);
+                double numero = Double.parseDouble(
+                        entrada.nextLine().replace(",", ".")
+                );
+
+                if (Double.isFinite(numero) && numero > 0) {
+                    return numero;
+                }
+
+                System.out.println("Ingrese un número mayor que cero.");
+
+            } catch (NumberFormatException e) {
+                System.out.println("Ingrese un número válido.");
+            }
+        }
+    }
+
+    // Leer un interés igual o mayor que cero
+    private double leerInteres(String mensaje) {
+        while (true) {
+            try {
+                System.out.print(mensaje);
+                double interes = Double.parseDouble(
+                        entrada.nextLine().replace(",", ".")
+                );
+
+                if (Double.isFinite(interes) && interes >= 0) {
+                    return interes;
+                }
+
+                System.out.println("El interés no puede ser negativo.");
+
+            } catch (NumberFormatException e) {
+                System.out.println("Ingrese un interés válido.");
+            }
+        }
+    }
+
+    // Mostrar el menú de préstamos
     public void mostrarMenu() {
         int opcion;
 
@@ -37,20 +120,19 @@ public class MenuPrestamo {
             System.out.println("1. Registrar prestamo");
             System.out.println("2. Consultar prestamos");
             System.out.println("3. Volver");
-            System.out.print("Seleccione: ");
 
-            opcion = Integer.parseInt(entrada.nextLine());
+            opcion = leerOpcion("Seleccione: ", 1, 3);
 
             switch (opcion) {
                 case 1 -> registrarPrestamo();
                 case 2 -> consultarPrestamos();
                 case 3 -> System.out.println("Volviendo...");
-                default -> System.out.println("Opcion no valida.");
             }
 
         } while (opcion != 3);
     }
 
+    // Registrar un préstamo
     private void registrarPrestamo() {
         List<Cliente> clientes = gestionarCliente.listarClientes();
         List<Empleado> empleados = gestionarEmpleado.listarEmpleados();
@@ -60,58 +142,61 @@ public class MenuPrestamo {
             return;
         }
 
+        System.out.println("\n===== CLIENTES =====");
+
         for (Cliente c : clientes) {
             System.out.println(c.getid() + ". " + c.getnombre());
         }
 
-        System.out.print("ID del cliente: ");
-        int idCliente = Integer.parseInt(entrada.nextLine());
         Cliente cliente = null;
 
-        for (Cliente c : clientes) {
-            if (c.getid() == idCliente) {
-                cliente = c;
-                break;
+        while (cliente == null) {
+            int idCliente = leerEntero("ID del cliente: ");
+
+            for (Cliente c : clientes) {
+                if (c.getid() == idCliente) {
+                    cliente = c;
+                    break;
+                }
+            }
+
+            if (cliente == null) {
+                System.out.println("Cliente no encontrado. Intente nuevamente.");
             }
         }
 
-        if (cliente == null) {
-            System.out.println("Cliente no encontrado.");
-            return;
-        }
+        System.out.println("\n===== EMPLEADOS =====");
 
         for (Empleado e : empleados) {
             System.out.println(e.getid() + ". " + e.getnombre());
         }
 
-        System.out.print("ID del empleado: ");
-        int idEmpleado = Integer.parseInt(entrada.nextLine());
         Empleado empleado = null;
 
-        for (Empleado e : empleados) {
-            if (e.getid() == idEmpleado) {
-                empleado = e;
-                break;
+        while (empleado == null) {
+            int idEmpleado = leerEntero("ID del empleado: ");
+
+            for (Empleado e : empleados) {
+                if (e.getid() == idEmpleado) {
+                    empleado = e;
+                    break;
+                }
+            }
+
+            if (empleado == null) {
+                System.out.println("Empleado no encontrado. Intente nuevamente.");
             }
         }
 
-        if (empleado == null) {
-            System.out.println("Empleado no encontrado.");
-            return;
-        }
+        double monto = leerNumero("Monto: ");
+        double interes = leerInteres("Interes (%): ");
+        int cuotas = leerEntero("Numero de cuotas: ");
 
-        System.out.print("Monto: ");
-        double monto = Double.parseDouble(entrada.nextLine());
-
-        System.out.print("Interes (%): ");
-        double interes = Double.parseDouble(entrada.nextLine());
-
-        System.out.print("Numero de cuotas: ");
-        int cuotas = Integer.parseInt(entrada.nextLine());
-
+        System.out.println("\n===== TIPO DE INTERES =====");
         System.out.println("1. Interes simple");
         System.out.println("2. Interes compuesto");
-        int tipo = Integer.parseInt(entrada.nextLine());
+
+        int tipo = leerOpcion("Seleccione: ", 1, 2);
 
         estrategia metodo;
 
@@ -124,15 +209,22 @@ public class MenuPrestamo {
             }
         }
 
-        double total = calculadora.calcularTotal(monto, interes, cuotas, metodo);
-        double valorCuota = calculadora.calcularCuota(monto, interes, cuotas, metodo);
+        double total = calculadora.calcularTotal(
+                monto, interes, cuotas, metodo
+        );
 
-        Prestamo prestamo = new Prestamo(0, cliente, empleado, monto,
-        interes, cuotas, "pendiente", LocalDate.now());
-        
+        double valorCuota = calculadora.calcularCuota(
+                monto, interes, cuotas, metodo
+        );
+
+        Prestamo prestamo = new Prestamo(
+                0, cliente, empleado, monto,
+                interes, cuotas, "pendiente", LocalDate.now()
+        );
+
         prestamo.settotal(total);
 
-        System.out.println("Total a pagar: " + total);
+        System.out.println("\nTotal a pagar: " + total);
         System.out.println("Valor de cada cuota: " + valorCuota);
 
         if (gestionarPrestamo.registrarPrestamo(prestamo)) {
@@ -142,8 +234,14 @@ public class MenuPrestamo {
         }
     }
 
+    // Consultar los préstamos registrados
     private void consultarPrestamos() {
         List<Prestamo> lista = gestionarPrestamo.listarPrestamos();
+
+        if (lista.isEmpty()) {
+            System.out.println("No hay prestamos registrados.");
+            return;
+        }
 
         for (Prestamo p : lista) {
             System.out.println("\nID: " + p.getid());
@@ -157,3 +255,4 @@ public class MenuPrestamo {
         }
     }
 }
+

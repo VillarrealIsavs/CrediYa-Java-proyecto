@@ -1,5 +1,4 @@
 
-
 package view;
 
 import controller.GestionarPrestamo;
@@ -33,11 +32,23 @@ public class MenuReporte {
             System.out.println("5. Prestamos vencidos");
             System.out.println("6. Clientes morosos");
             System.out.println("7. Volver");
-            System.out.print("Seleccione: ");
 
-            opcion = Integer.parseInt(entrada.nextLine());
+            try {
+                System.out.print("Seleccione: ");
+                opcion = Integer.parseInt(entrada.nextLine());
 
-            if (opcion == 7) {
+                if (opcion == 7) {
+                    continue;
+                }
+
+                if (opcion < 1 || opcion > 6) {
+                    System.out.println("Opcion no valida.");
+                    continue;
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Ingrese una opcion numerica valida.");
+                opcion = 0;
                 continue;
             }
 
@@ -50,10 +61,6 @@ public class MenuReporte {
                 case 4 -> lista = reporte.prestamosPagados(lista);
                 case 5 -> lista = reporte.prestamosVencidos(lista);
                 case 6 -> lista = reporte.clientesMorosos(lista);
-                default -> {
-                    System.out.println("Opcion no valida.");
-                    continue;
-                }
             }
 
             if (lista.isEmpty()) {
