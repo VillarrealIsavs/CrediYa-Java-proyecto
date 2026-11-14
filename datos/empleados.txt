@@ -1,2 +1,3 @@
 
 0,Isabella,1097500278,villarrealisavs@gmail.com,vendedora,5000000.0
+2,Santiago,12345,santi@gmail.com,vendedor,6000000.0

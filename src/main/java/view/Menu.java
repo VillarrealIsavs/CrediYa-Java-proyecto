@@ -27,7 +27,7 @@ public class Menu {
             System.out.println("|  1. Gestionar empleados y clientes       |");
             System.out.println("|  2. Gestionar prestamos                  |");
             System.out.println("|  3. Gestionar pagos                      |");
-            System.out.println("|  4. Consultar reportes                   |");
+            System.out.println("|  4. Examen Gestion Prestamos             |");
             System.out.println("|  5. Salir                                |");
             System.out.println("|                                          |");
             System.out.println("+------------------------------------------+");

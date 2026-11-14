@@ -24,7 +24,7 @@ public class MenuReporte {
         int opcion;
 
         do {
-            System.out.println("\n===== REPORTES =====");
+            System.out.println("\n===== Examen Gestion Prestamos =====");
             System.out.println("1. Prestamos pendientes");
             System.out.println("2. Prestamos cancelados");
             System.out.println("3. Prestamos entregados");
